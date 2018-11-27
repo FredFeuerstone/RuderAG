@@ -1,0 +1,9 @@
+Benutzerrechte:
+    Admin
+    Mitglied
+    Gast
+Menüeinträge:
+    Startseite              Admin, Mitglied, Gast
+    Liste                   Admin, Mitglied
+    Informationen           Admin, Mitglied, Gast
+    Anwesenheitsliste       Admin
