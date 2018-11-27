@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-navbar color="secondary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Liste</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <p>
+    Logge dich ein um zur Anmeldeliste zu gelangen.
+  </p>
+
+  <ion-list>
+    <ion-item>
+      <ion-label color="primary" stacked>Benutzername</ion-label>
+      <ion-input type="name" placeholder="Name und Nachname" [formControl]="credentialsForm.controls['name']"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label color="primary" stacked>Passwort</ion-label>
+      <ion-input type="password" placeholder="Passwort" [formControl]="credentialsForm.controls['password']"></ion-input>
+    </ion-item>
+  </ion-list>
+
+  <button ion-button block (click)="onValidatePassword()">Login</button>
+</ion-content>
+
+
