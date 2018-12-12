@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
+import { RestProvider } from '../../providers/rest/rest';
 
 @Component({
   selector: 'page-home',
@@ -7,8 +8,17 @@ import { NavController } from 'ionic-angular';
 })
 export class HomePage {
 
-  constructor(public navCtrl: NavController) {
+  newsfeed: any;
 
+  constructor(public navCtrl: NavController, public restProvider: RestProvider) {
+    this.getNewsfeed();
   }
 
+  getNewsfeed() {
+    this.restProvider.getNewsfeed()
+      .then(data => {
+        this.newsfeed = data;
+        console.log(this.newsfeed);
+      })
+  }
 }
