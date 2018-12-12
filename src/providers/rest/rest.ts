@@ -11,17 +11,34 @@ import { Injectable } from '@angular/core';
 export class RestProvider {
   apiUrl = 'http://amonnenpc:80/ruderag/api';
 
+  user = null;
+  
   constructor(public http: HttpClient) {
-    console.log('Hello RestProvider Provider');
+    
+  }
+
+  login(loginCredentials) {
+    return new Promise(resolve => {
+      this.http.post(this.apiUrl + '/login', loginCredentials).subscribe(data => {
+        this.user = data;
+        resolve(data);
+      }, err => {
+        console.log(err);
+      })
+    })
   }
 
   getNewsfeed() {
     return new Promise(resolve => {
       this.http.get(this.apiUrl + '/newsfeed').subscribe(data => {
-        resolve(data);
+        this.user = data;
       }, err => {
         console.log(err);
       });
     });
+  }
+
+  getUser() {
+    return this.user;
   }
 }

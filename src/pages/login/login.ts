@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
-import { FormBuilder,FormGroup } from '@angular/forms';
-
-import { ListPage } from '../list/list';
+import { RestProvider } from '../../providers/rest/rest';
+import { CodegenComponentFactoryResolver } from '@angular/core/src/linker/component_factory_resolver';
 
 @Component({
   selector: 'page-login',
@@ -10,32 +9,21 @@ import { ListPage } from '../list/list';
 })
 export class LoginPage {
 
-  storedPassword: String;
-  credentialsForm: FormGroup;
+  username: String;
+  password: String;
 
-  constructor(public navCtrl: NavController, private formBuilder: FormBuilder) {
-    this.storedPassword = "test";
+  constructor(public navCtrl: NavController, public restProvider: RestProvider) {
 
-    this.credentialsForm = this.formBuilder.group({
-      name: [''],
-      password: ['']
+  }
+
+  login() {
+    this.restProvider.login({
+      username: this.username,
+      password: this.password
+    }).then(data => {
+      console.log(data);
+    }).catch(reason => {
+      console.log(reason);
     });
   }
-
-  onValidatePassword() {
-    
-    if(this.credentialsForm.controls.name.value == '') {
-      alert ("Gib bitte deinen Namen als Benutzernamen ein!")
-    }
-    else {
-      console.log(this.credentialsForm.controls.name.value);
-      if(this.storedPassword == this.credentialsForm.controls.password.value) {
-        this.navCtrl.push(ListPage);
-      } else {
-        alert ("Du hast ein falsches Passwort eingegeben!");
-      }
-    }
-      
-  }
-
 } 

@@ -15,15 +15,13 @@
   <ion-list>
     <ion-item>
       <ion-label color="primary" stacked>Benutzername</ion-label>
-      <ion-input type="name" placeholder="Name und Nachname" [formControl]="credentialsForm.controls['name']"></ion-input>
+      <ion-input [(ngModel)]="username" type="name" placeholder="Name und Nachname"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label color="primary" stacked>Passwort</ion-label>
-      <ion-input type="password" placeholder="Passwort" [formControl]="credentialsForm.controls['password']"></ion-input>
+      <ion-input [(ngModel)]="password" type="password" placeholder="Passwort"></ion-input>
     </ion-item>
   </ion-list>
 
-  <button ion-button block (click)="onValidatePassword()">Login</button>
+  <button ion-button block (click)="login()">Login</button>
 </ion-content>
-
-
