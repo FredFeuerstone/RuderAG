@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { RestProvider } from '../../providers/rest/rest';
-import { CodegenComponentFactoryResolver } from '@angular/core/src/linker/component_factory_resolver';
 
 @Component({
   selector: 'page-login',
@@ -26,4 +25,4 @@ export class LoginPage {
       console.log(reason);
     });
   }
-} 
+}
