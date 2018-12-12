@@ -8,10 +8,16 @@
 </ion-header>
 
 <ion-content padding>
-  <h3>Herzlich Willkommen!</h3>
+  <div>
+    <h3>Herzlich Willkommen!</h3>
 
-  <p>
-    Bei der Ruder AG des Goethe-Gymnasiums-Lichterfelde!
-  </p>
-
+    <p>
+      Bei der Ruder AG des Goethe-Gymnasiums-Lichterfelde!
+    </p>
+  </div>
+  
+  <div *ngFor="let news of newsfeed">
+    <h4> {{news.title}} </h4>
+    <p> {{news.content}} </p>
+  </div>
 </ion-content>
