@@ -22,7 +22,7 @@ export class ListPage {
 
   getData() {
     this.storage.get('Checkbox status').then((data) => {
-    console.log(data);
+      console.log(data);
     });
   }
 }
