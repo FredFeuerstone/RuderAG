@@ -9,7 +9,7 @@ import { Injectable } from '@angular/core';
 */
 @Injectable()
 export class RestProvider {
-  apiUrl = 'http://amonnenpc:80/ruderag/api';
+  apiUrl = 'http://ruderagapi.goethe-oberschule-berlin.de/api';
 
   user = null;
   
@@ -31,7 +31,7 @@ export class RestProvider {
   getNewsfeed() {
     return new Promise(resolve => {
       this.http.get(this.apiUrl + '/newsfeed').subscribe(data => {
-        this.user = data;
+        resolve(data);
       }, err => {
         console.log(err);
       });

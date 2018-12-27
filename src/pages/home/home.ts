@@ -18,7 +18,6 @@ export class HomePage {
     this.restProvider.getNewsfeed()
       .then(data => {
         this.newsfeed = data;
-        console.log(this.newsfeed);
       })
   }
 }

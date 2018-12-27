@@ -8,16 +8,29 @@
 </ion-header>
 
 <ion-content padding>
-  <div>
-    <h3>Herzlich Willkommen!</h3>
+  <div padding-bottom>
+    <h2>Herzlich Willkommen!</h2>
 
     <p>
       Bei der Ruder AG des Goethe-Gymnasiums-Lichterfelde!
     </p>
   </div>
   
-  <div *ngFor="let news of newsfeed">
-    <h4> {{news.title}} </h4>
-    <p> {{news.content}} </p>
+  <div>
+    <h2>Neuigkeiten</h2>
+    
+    <div *ngFor="let news of newsfeed" padding-bottom text-wrap>
+      <!-- Title -->
+      <h4>{{news.title}}</h4>
+
+      <!-- Event Datetime (only displayed if available) -->
+      <h6 *ngIf="news.eventAt">am {{news.eventAt | date: "d. M. yyyy"}} um {{news.eventAt | date: "HH:mm"}}</h6>
+
+      <!-- Content -->
+      <p>{{news.content}}</p>
+
+      <!-- Created At Datetime -->
+      <p class="half-transparent">Erstellt am {{news.createdAt | date: "d. M. yyyy HH:mm"}}</p>
+    </div>
   </div>
 </ion-content>
