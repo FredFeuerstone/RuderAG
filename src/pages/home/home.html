@@ -8,6 +8,7 @@
 </ion-header>
 
 <ion-content padding>
+  <!-- Welcome sheet -->
   <div padding-bottom>
     <h2>Herzlich Willkommen!</h2>
 
@@ -16,21 +17,37 @@
     </p>
   </div>
   
+  <!-- Newsfeed -->
   <div>
     <h2>Neuigkeiten</h2>
-    
-    <div *ngFor="let news of newsfeed" padding-bottom text-wrap>
-      <!-- Title -->
-      <h4>{{news.title}}</h4>
 
-      <!-- Event Datetime (only displayed if available) -->
-      <h6 *ngIf="news.eventAt">am {{news.eventAt | date: "d. M. yyyy"}} um {{news.eventAt | date: "HH:mm"}}</h6>
+    <ion-card *ngFor="let news of newsfeed">
+      <!-- Title and event date -->
+      <ion-item>
+        <ion-card-title>{{news.title}}</ion-card-title>
+        <p *ngIf="news.eventAt">am {{news.eventAt | date: "d. M. yyyy"}} um {{news.eventAt | date: "HH:mm"}}</p>
+      </ion-item>
 
       <!-- Content -->
-      <p>{{news.content}}</p>
+      <ion-card-content>
+        <p>{{news.content}}</p>
+      </ion-card-content>
 
-      <!-- Created At Datetime -->
-      <p class="half-transparent">Erstellt am {{news.createdAt | date: "d. M. yyyy HH:mm"}}</p>
-    </div>
+      <!-- Created at date -->
+      <ion-row>
+        <ion-col center text-center>
+          <ion-note>
+              Erstellt am {{news.createdAt | date: "d. M. yyyy"}} um {{news.createdAt | date: "HH:mm"}}
+          </ion-note>
+        </ion-col>
+      </ion-row>
+    </ion-card>
   </div>
+
+  <!-- Add newsfeed FAB -->
+  <ion-fab right bottom>
+    <button ion-fab color="primary">
+      <ion-icon name="add"></ion-icon>
+    </button>
+  </ion-fab>
 </ion-content>
