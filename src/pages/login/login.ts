@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, Alert } from 'ionic-angular';
+import { NavController } from 'ionic-angular';
 import { RestProvider } from '../../providers/rest/rest';
 import { AlertController } from 'ionic-angular';
 import { HomePage } from '../home/home';
