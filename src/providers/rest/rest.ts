@@ -1,3 +1,4 @@
+import { Config } from '../../app/app.config';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
@@ -9,8 +10,6 @@ import { Injectable } from '@angular/core';
 */
 @Injectable()
 export class RestProvider {
-  apiUrl = 'http://ruderagapi.goethe-oberschule-berlin.de/api';
-
   user = null;
   
   constructor(public http: HttpClient) {
@@ -18,27 +17,36 @@ export class RestProvider {
   }
 
   login(loginCredentials) {
-    return new Promise(resolve => {
-      this.http.post(this.apiUrl + '/login', loginCredentials).subscribe(data => {
+    return new Promise((resolve, reject) => {
+      this.http.post(Config.apiUrl + '/login', loginCredentials).subscribe(data => {
+        // Set the token
+        localStorage.setItem('user.token', data['token']);
+
+        // Set the user
         this.user = data;
-        resolve(data);
+        resolve();
       }, err => {
-        console.log(err);
+        reject(err.error);
       })
     })
   }
 
+  logout() {
+    // Clear the token
+    localStorage.removeItem('user.token');
+
+    // Forget the current user.
+    this.user = null;
+  }
+
   getNewsfeed() {
     return new Promise(resolve => {
-      this.http.get(this.apiUrl + '/newsfeed').subscribe(data => {
+      this.http.get(Config.apiUrl + '/newsfeed').subscribe(data => {
         resolve(data);
       }, err => {
         console.log(err);
-      });
+        resolve([]); // We couldn't fetch the array, return an empty one
+      })
     });
-  }
-
-  getUser() {
-    return this.user;
   }
 }

@@ -3,25 +3,48 @@
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>Liste</ion-title>
+    <ion-title>Login</ion-title>
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-  <p>
-    Logge dich ein um zur Anmeldeliste zu gelangen.
-  </p>
+<ion-content>
+    <!-- Will be displayed if no user is logged in -->
+    <ion-card *ngIf="!this.restProvider.user">
+      <form (ngSubmit)="login()">
+        <!-- Login title -->
+        <ion-item text-wrap>
+          <ion-card-title>Login</ion-card-title>
+        </ion-item>
+  
+        <!-- Login username -->
+        <ion-item>
+          <ion-label color="primary" stacked>Benutzername</ion-label>
+          <ion-input [(ngModel)]="username" type="name" name="username"></ion-input>
+        </ion-item>
+  
+        <!-- Login password -->
+        <ion-item>
+          <ion-label color="primary" stacked>Passwort</ion-label>
+          <ion-input [(ngModel)]="password" type="password" name="password"></ion-input>
+        </ion-item>
+  
+        <!-- Submit button -->
+        <ion-item>
+          <button ion-button type="submit" block>Login</button>
+        </ion-item>
+      </form>
+    </ion-card>
 
-  <ion-list>
-    <ion-item>
-      <ion-label color="primary" stacked>Benutzername</ion-label>
-      <ion-input [(ngModel)]="username" type="name" placeholder="Name und Nachname"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label color="primary" stacked>Passwort</ion-label>
-      <ion-input [(ngModel)]="password" type="password" placeholder="Passwort"></ion-input>
-    </ion-item>
-  </ion-list>
+    <!-- Will be displayed if a user is logged in -->
+    <ion-card *ngIf="this.restProvider.user">
+      <!-- Login title -->
+      <ion-item text-wrap>
+        <ion-card-title>Eingeloggt als {{this.restProvider.user.username}}</ion-card-title>
+      </ion-item>
 
-  <button ion-button block (click)="login()">Login</button>
+      <!-- Logout button -->
+      <ion-item>
+        <button ion-button (click)="logout()" block>Logout</button>
+      </ion-item>
+    </ion-card>
 </ion-content>

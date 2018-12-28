@@ -7,42 +7,72 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-  <!-- Welcome sheet -->
-  <div padding-bottom>
-    <h2>Herzlich Willkommen!</h2>
+<ion-content>
+  <!-- Welcome card (for guest and member / admin) -->
+  <ion-card *ngIf="!this.restProvider.user">
+    <ion-item>
+      <ion-card-title>Herzlich Willkommen</ion-card-title>
+    </ion-item>
+    <ion-card-content>
+      <p>
+        ...bei der Ruder AG des Goethe Gymnasiums. Ja, ja. Das ist Bonn, nicht Paris.
+      </p>
+    </ion-card-content>
+  </ion-card>
 
-    <p>
-      Bei der Ruder AG des Goethe-Gymnasiums-Lichterfelde!
-    </p>
-  </div>
+  <ion-card *ngIf="this.restProvider.user">
+    <ion-item>
+      <ion-card-title>Ja Moin {{this.restProvider.user.firstName}}</ion-card-title>
+    </ion-item>
+    <ion-card-content no-padding text-wrap>
+      <ion-list>
+        <ion-item>
+          Einfach nur weil ich es kann, sag ich dir jetzt ein paar Informationen
+          (das sollte vllt in der entgültigen App nicht mehr da stehen):
+        </ion-item>
+        <ion-item>
+          Dein Name ist: {{this.restProvider.user.firstName}} {{this.restProvider.user.lastName}}
+        </ion-item>
+        <ion-item>
+          Dein Benutzername ist: {{this.restProvider.user.username}}
+        </ion-item>
+        <ion-item>
+          Dein Password ist: Haha verarscht, das weiß ich natürlich nicht :(
+        </ion-item>
+        <ion-item>
+          Deine Benutzer-Gruppe ist: {{['Gast', 'Mitglied', 'Admin'][this.restProvider.user.groupId]}}
+        </ion-item>
+        <ion-item>
+          Dein Token ist: {{this.restProvider.user.token}}
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
   
-  <!-- Newsfeed -->
-  <div>
-    <h2>Neuigkeiten</h2>
+  <!-- Newsfeed cards -->
+  <ion-item-divider>Aktuelles</ion-item-divider>
 
-    <ion-card *ngFor="let news of newsfeed">
-      <!-- Title and event date -->
-      <ion-item>
-        <ion-card-title>{{news.title}}</ion-card-title>
-        <p *ngIf="news.eventAt">am {{news.eventAt | date: "d. M. yyyy"}} um {{news.eventAt | date: "HH:mm"}}</p>
-      </ion-item>
+  <ion-card *ngFor="let news of newsfeed">
+    <!-- Title and event date -->
+    <ion-item>
+      <ion-card-title>{{news.title}}</ion-card-title>
+      <p *ngIf="news.eventAt">am {{news.eventAt | date: "d. M. yyyy"}} um {{news.eventAt | date: "HH:mm"}}</p>
+    </ion-item>
 
-      <!-- Content -->
-      <ion-card-content>
-        <p>{{news.content}}</p>
-      </ion-card-content>
+    <!-- Content -->
+    <ion-card-content>
+      <p>{{news.content}}</p>
+    </ion-card-content>
 
-      <!-- Created at date -->
-      <ion-row>
-        <ion-col center text-center>
-          <ion-note>
-              Erstellt am {{news.createdAt | date: "d. M. yyyy"}} um {{news.createdAt | date: "HH:mm"}}
-          </ion-note>
-        </ion-col>
-      </ion-row>
-    </ion-card>
-  </div>
+    <!-- Created at date -->
+    <ion-row>
+      <ion-col center text-center>
+        <ion-note>
+            Erstellt am {{news.createdAt | date: "d. M. yyyy"}} um {{news.createdAt | date: "HH:mm"}}
+        </ion-note>
+      </ion-col>
+    </ion-row>
+  </ion-card>
 
   <!-- Add newsfeed FAB -->
   <ion-fab right bottom>

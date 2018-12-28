@@ -2,14 +2,18 @@ import { Component, ViewChild } from '@angular/core';
 import { Nav, Platform } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { RestProvider } from '../providers/rest/rest';
 
 import { HomePage } from '../pages/home/home';
 import { LoginPage } from '../pages/login/login';
 import { InformationPage } from '../pages/information/information';
 
+export const API_URL = 'http://ruderagapi.goethe-oberschule-berlin.de/api';
+
 @Component({
   templateUrl: 'app.html'
 })
+
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
@@ -17,7 +21,7 @@ export class MyApp {
 
   pages: Array<{title: string, component: any}>;
 
-  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen) {
+  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, private restProvider: RestProvider) {
     this.initializeApp();
 
     // used for an example of ngFor and navigation
@@ -27,6 +31,16 @@ export class MyApp {
        { title: 'Login', component: LoginPage }
     ];
 
+    // Try to log in if the credentials are available
+    const loginCredentials = {
+      username: localStorage.getItem('loginCredentials.username'),
+      password: localStorage.getItem('loginCredentials.password')
+    }
+
+    if (loginCredentials.username && loginCredentials.password) {
+      // If we have stored credentials, try to log in. If the login fails, just ignore it.
+      restProvider.login(loginCredentials);
+    }
   }
 
   initializeApp() {

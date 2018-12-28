@@ -3,6 +3,7 @@ import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { IonicStorageModule } from '@ionic/storage';
 
+import { Config } from './app.config';
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { LoginPage } from '../pages/login/login';
@@ -12,6 +13,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { InformationPage } from '../pages/information/information';
 
+import { JwtModule } from '@auth0/angular-jwt';
 import { HttpClientModule } from '@angular/common/http';
 import { RestProvider } from '../providers/rest/rest';
 
@@ -26,6 +28,17 @@ import { RestProvider } from '../providers/rest/rest';
   imports: [
     BrowserModule,
     HttpClientModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: () => localStorage.getItem('user.token'),
+        whitelistedDomains: [Config.apiUrl],
+        blacklistedRoutes: [
+          '/newsfeed',
+          '/login'
+        ],
+        skipWhenExpired: true
+      }
+    }),
     IonicModule.forRoot(MyApp),
     IonicStorageModule.forRoot()
 
