@@ -8,9 +8,17 @@
 </ion-header>
 
 <ion-content>
-  <!-- Welcome card (for guest and member / admin) -->
+  <!-- Welcome header -->
+  <ion-item-divider>
+    <span>Startseite</span>
+    <button ion-button *ngIf="this.restProvider.groupId >= 1" clear color="secondary" item-end>
+      Profil
+    </button>
+  </ion-item-divider>
+
+  <!-- Welcome card -->
   <ion-card *ngIf="!this.restProvider.user">
-    <ion-item>
+    <ion-item text-wrap>
       <ion-card-title>Herzlich Willkommen</ion-card-title>
     </ion-item>
     <ion-card-content>
@@ -21,9 +29,10 @@
   </ion-card>
 
   <ion-card *ngIf="this.restProvider.user">
-    <ion-item>
-      <ion-card-title>Ja Moin {{this.restProvider.user.firstName}}</ion-card-title>
+    <ion-item text-wrap>
+      <ion-card-title>Ja Moin, {{this.restProvider.user.firstName}}</ion-card-title>
     </ion-item>
+
     <ion-card-content no-padding text-wrap>
       <ion-list>
         <ion-item>
@@ -34,27 +43,24 @@
           Dein Name ist: {{this.restProvider.user.firstName}} {{this.restProvider.user.lastName}}
         </ion-item>
         <ion-item>
-          Dein Benutzername ist: {{this.restProvider.user.username}}
-        </ion-item>
-        <ion-item>
-          Dein Password ist: Haha verarscht, das weiß ich natürlich nicht :(
-        </ion-item>
-        <ion-item>
-          Deine Benutzer-Gruppe ist: {{['Gast', 'Mitglied', 'Admin'][this.restProvider.user.groupId]}}
-        </ion-item>
-        <ion-item>
-          Dein Token ist: {{this.restProvider.user.token}}
+          Deine Benutzer-Gruppe ist: {{['Gast', 'Mitglied', 'Admin'][this.restProvider.groupId]}}
         </ion-item>
       </ion-list>
     </ion-card-content>
   </ion-card>
   
-  <!-- Newsfeed cards -->
-  <ion-item-divider>Aktuelles</ion-item-divider>
+  <!-- Newsfeed header -->
+  <ion-item-divider>
+    <span>Aktuelles</span>
+    <button ion-button *ngIf="this.restProvider.groupId >= 2" clear color="secondary" item-end>
+      Neuer Eintrag
+    </button>
+  </ion-item-divider>
 
+  <!-- Newsfeed cards -->
   <ion-card *ngFor="let news of newsfeed">
     <!-- Title and event date -->
-    <ion-item>
+    <ion-item text-wrap>
       <ion-card-title>{{news.title}}</ion-card-title>
       <p *ngIf="news.eventAt">am {{news.eventAt | date: "d. M. yyyy"}} um {{news.eventAt | date: "HH:mm"}}</p>
     </ion-item>
@@ -73,11 +79,4 @@
       </ion-col>
     </ion-row>
   </ion-card>
-
-  <!-- Add newsfeed FAB -->
-  <ion-fab right bottom>
-    <button ion-fab color="primary">
-      <ion-icon name="add"></ion-icon>
-    </button>
-  </ion-fab>
 </ion-content>

@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-navbar color="dark">
+  <ion-navbar color="primary">
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
@@ -7,17 +7,41 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-  <h3>Anmeldung Samstag</h3>
-  <ion-item>
-    <ion-label>Kommst du am Samstag?</ion-label>
-    <ion-checkbox color="dark" [(ngModel)]="Checkbox" (ionChange)="updateCheckbox()"></ion-checkbox>
-  </ion-item>
-  <ion-item> 
-    <button ion-button (click)="getData()">GetData</button>
-  </ion-item>
-  
-  <p>
-    Es wäre gut wenn du dich immer auch auf die Liste schreibst, die vor dem Raum 033 am schwarzen Brett aushängt. Wenn du kurzfristig doch nicht kannst, sag jemandem Bescheid und trag dich hier, sowie auf von der Liste am Brett aus.
-  </p>
+<ion-content>
+  <!-- A small info text -->
+  <ion-card>
+    <ion-item text-wrap>
+        <p>
+          Es wäre gut wenn du dich immer auch auf die Liste schreibst, die <b>vor dem Raum 033 am schwarzen Brett</b> aushängt.
+          Wenn du kurzfristig doch nicht kannst, sag jemandem Bescheid und trag dich hier, sowie auf von der Liste am Brett aus.
+        </p>
+      </ion-item>
+  </ion-card>
+
+  <!-- Attendance list -->
+  <ion-card>
+    <ion-item>
+      <ion-card-title>Anmeldung Samstag</ion-card-title>
+    </ion-item>
+
+    <!-- <ion-item>
+      <ion-label color="primary">Kommst du am Samstag?</ion-label>
+      <ion-checkbox color="dark" [(ngModel)]="Checkbox" (ionChange)="updateCheckbox()"></ion-checkbox>
+    </ion-item> -->
+
+    <ion-list>
+      <ion-item color="light">
+        <ion-label item-start><b>Ich</b></ion-label>
+        <ion-checkbox item-end></ion-checkbox>
+      </ion-item>
+      <ion-item>
+        <ion-label item-start>Rainer Zufall</ion-label>
+        <ion-checkbox disabled checked item-end></ion-checkbox>
+      </ion-item>
+      <ion-item>
+        <ion-label item-start>Zufälliger Reinfall</ion-label>
+        <ion-checkbox disabled item-end></ion-checkbox>
+      </ion-item>
+    </ion-list>
+  </ion-card>
 </ion-content>

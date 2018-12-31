@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { RestProvider } from '../../providers/rest/rest';
+import { Storage } from '@ionic/storage';
+
 import { AlertController } from 'ionic-angular';
 import { HomePage } from '../home/home';
 
@@ -13,7 +15,7 @@ export class LoginPage {
   username: string;
   password: string;
 
-  constructor(public navCtrl: NavController, public restProvider: RestProvider, public alertCtrl: AlertController) {
+  constructor(public navCtrl: NavController, public restProvider: RestProvider, public storage: Storage, public alertCtrl: AlertController) {
     // FOR DEBUGGING ONLY
     this.username = "admin";
     this.password = "p455w0rd";
@@ -26,8 +28,10 @@ export class LoginPage {
     }).then(() => {
       // Store the login credentials. This way we will be logged in automatically the next time
       // the app ist opened (see app/app.component.ts constructor)
-      localStorage.setItem('loginCredentials.username', this.username);
-      localStorage.setItem('loginCredentials.password', this.password);
+      this.storage.set('loginCredentials', {
+        username: this.username,
+        password: this.password
+      });
 
       // Switch back to the home page
       this.navCtrl.setRoot(HomePage);
@@ -43,6 +47,8 @@ export class LoginPage {
   }
 
   logout() {
+    // Logout and switch to the home page
     this.restProvider.logout();
+    this.navCtrl.setRoot(HomePage);
   }
 }

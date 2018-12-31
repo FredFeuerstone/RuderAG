@@ -11,10 +11,10 @@ export class HomePage {
   newsfeed: any;
 
   constructor(public navCtrl: NavController, public restProvider: RestProvider) {
-    this.getNewsfeed();
+    this.loadNewsfeed();
   }
 
-  getNewsfeed() {
+  loadNewsfeed() {
     this.restProvider.getNewsfeed()
       .then(data => {
         this.newsfeed = data;

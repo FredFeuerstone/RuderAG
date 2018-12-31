@@ -30,7 +30,7 @@ import { RestProvider } from '../providers/rest/rest';
     HttpClientModule,
     JwtModule.forRoot({
       config: {
-        tokenGetter: () => localStorage.getItem('user.token'),
+        tokenGetter: () => localStorage.getItem('access_token'), // <- This works. I tested it!
         whitelistedDomains: [Config.apiUrl],
         blacklistedRoutes: [
           '/newsfeed',

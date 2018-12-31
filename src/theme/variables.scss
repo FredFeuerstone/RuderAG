@@ -22,6 +22,11 @@ $app-direction: ltr;
 // To view all the possible Ionic variables, see:
 // http://ionicframework.com/docs/theming/overriding-ionic-variables/
 
+// Make the disabled checkbox look like a normal one
+$checkbox-ios-disabled-opacity: 1.0;
+$checkbox-md-disabled-opacity: 1.0;
+$checkbox-wp-disabled-opacity: 1.0;
+
 
 
 
@@ -34,8 +39,10 @@ $app-direction: ltr;
 // The "primary" color is the only required color in the map.
 
 $colors: (
-  primary:    #3e6fda,
-  secondary:  #338a21,
+  primary:    #1976d2,
+  secondary:  #ef6c00,
+  success:    #0ec254,
+  warning:    #ffce00,
   danger:     #f53d3d,
   light:      #f4f4f4,
   dark:       #222
