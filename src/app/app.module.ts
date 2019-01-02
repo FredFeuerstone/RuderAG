@@ -31,9 +31,10 @@ import { RestProvider } from '../providers/rest/rest';
     JwtModule.forRoot({
       config: {
         tokenGetter: () => {
-          return localStorage.getItem('access_token') // <- This works. I tested it!
+          return localStorage.getItem('access_token'); // <- This works. I tested it!
         },
         whitelistedDomains: [Config.apiDomain],
+        blacklistedRoutes: [],
         skipWhenExpired: true
       }
     }),

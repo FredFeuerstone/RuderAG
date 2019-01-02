@@ -8,13 +8,14 @@ import { RestProvider } from '../../providers/rest/rest';
 })
 export class ListPage {
 
-  users: Array<Object>;
+  ownAttendance: Boolean;
+  users: any;
 
   constructor(public navCtrl: NavController, public restProvider: RestProvider) {
     // Read the attendances of all users, if we are admin
     if (restProvider.groupId >= 2) {
       restProvider.indexUsers().then((data) => {
-        console.log(data);
+        this.users = data;
       }).catch((reason) => {
         // Oh no, something failed. Just set the users to null.
         this.users = null;
@@ -27,7 +28,14 @@ export class ListPage {
   }
   
 
-  updateCheckbox() {
-
+  updateOwnAttendant() {
+    this.restProvider.putAttendance(this.restProvider.user.username, this.ownAttendance)
+      .then(() => {
+        if (this.restProvider.groupId >= 2) {
+          this.restProvider.indexUsers().then((data) => {
+            this.users = data;
+          })
+        }
+      });
   }
 }

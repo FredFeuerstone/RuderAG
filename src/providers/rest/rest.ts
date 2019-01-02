@@ -59,6 +59,19 @@ export class RestProvider {
     });
   }
 
+  putAttendance(username, attendant) {
+    return new Promise((resolve, reject) => {
+      this.http.put(Config.apiUrl + '/attendances/byusername', {
+        username: username,
+        attendant: attendant
+      }).subscribe(data => {
+        resolve();
+      }, err => {
+        reject(err.error);
+      })
+    })
+  }
+
   getNewsfeed() {
     return new Promise(resolve => {
       this.http.get(Config.apiUrl + '/newsfeed').subscribe(data => {
