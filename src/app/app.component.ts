@@ -37,7 +37,9 @@ export class MyApp {
 
     // If we have stored credentials, try to log in. If the login fails, just ignore it.
     storage.get('loginCredentials').then(loginCredentials => {
-      restProvider.login(loginCredentials);
+      if (loginCredentials) {
+        restProvider.login(loginCredentials);
+      }
     })
   }
 
