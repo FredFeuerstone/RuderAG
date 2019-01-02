@@ -1,3 +1,4 @@
 export class Config {
-  public static apiUrl = 'http://ruderagapi.amonbenson.de/api';
+  public static apiDomain = 'ruderagapi.amonbenson.de';
+  public static apiUrl = 'http://' + Config.apiDomain + '/api';
 }

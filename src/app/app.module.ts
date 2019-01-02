@@ -30,12 +30,10 @@ import { RestProvider } from '../providers/rest/rest';
     HttpClientModule,
     JwtModule.forRoot({
       config: {
-        tokenGetter: () => localStorage.getItem('access_token'), // <- This works. I tested it!
-        whitelistedDomains: [Config.apiUrl],
-        blacklistedRoutes: [
-          '/newsfeed',
-          '/login'
-        ],
+        tokenGetter: () => {
+          return localStorage.getItem('access_token') // <- This works. I tested it!
+        },
+        whitelistedDomains: [Config.apiDomain],
         skipWhenExpired: true
       }
     }),

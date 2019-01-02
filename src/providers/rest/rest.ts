@@ -23,6 +23,7 @@ export class RestProvider {
       this.http.post(Config.apiUrl + '/login', loginCredentials).subscribe(data => {
         // Set the token
         localStorage.setItem('access_token', data['token']);
+        console.log('new token: ' + data['token']);
 
         // Set the user
         this.user = data;
