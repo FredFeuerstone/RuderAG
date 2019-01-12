@@ -52,17 +52,22 @@
   <!-- Newsfeed header -->
   <ion-item-divider>
     <span>Aktuelles</span>
-    <button ion-button *ngIf="this.restProvider.groupId >= 2" clear color="secondary" item-end>
+    <button ion-button *ngIf="this.restProvider.groupId >= 2" clear color="secondary" (click)="addNewsfeed()" item-end>
       Neuer Eintrag
     </button>
   </ion-item-divider>
 
   <!-- Newsfeed cards -->
-  <ion-card *ngFor="let news of newsfeed">
+  <ion-card *ngFor="let news of newsfeed; let i = index">
     <!-- Title and event date -->
     <ion-item text-wrap>
       <ion-card-title>{{news.title}}</ion-card-title>
       <p *ngIf="news.eventAt">am {{news.eventAt | date: "d. M. yyyy"}} um {{news.eventAt | date: "HH:mm"}}</p>
+
+      <!-- Delete Button -->
+      <button *ngIf="this.restProvider.groupId >= 2" ion-button icon-only clear color="danger" (click)="deleteNewsfeed(i)" item-end>
+        <ion-icon name="trash"></ion-icon>
+      </button>
     </ion-item>
 
     <!-- Content -->

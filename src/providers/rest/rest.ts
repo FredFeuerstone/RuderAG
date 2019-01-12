@@ -15,7 +15,7 @@ export class RestProvider {
   groupId = 0;
   
   constructor(public http: HttpClient, public storage: Storage) {
-    
+    // TODO: GET AND POST WON'T ACCEPT BODIES.
   }
 
   login(loginCredentials) {
@@ -59,6 +59,18 @@ export class RestProvider {
     });
   }
 
+  getAttendance(username) {
+    return new Promise((resolve, reject) => {
+      this.http.get(Config.apiUrl + '/attendances/byusername', {
+        //username: username
+      }).subscribe(data => {
+        resolve();
+      }, err => {
+        reject(err.error);
+      })
+    })
+  }
+
   putAttendance(username, attendant) {
     return new Promise((resolve, reject) => {
       this.http.put(Config.apiUrl + '/attendances/byusername', {
@@ -75,6 +87,17 @@ export class RestProvider {
   getNewsfeed() {
     return new Promise(resolve => {
       this.http.get(Config.apiUrl + '/newsfeed').subscribe(data => {
+        resolve(data);
+      }, err => {
+        console.log(err);
+        resolve([]); // We couldn't fetch the array, return an empty one
+      });
+    });
+  }
+
+  deleteNewsfeed(id) {
+    return new Promise(resolve => {
+      this.http.delete(Config.apiUrl + '/newsfeed/byid').subscribe(data => {
         resolve(data);
       }, err => {
         console.log(err);
