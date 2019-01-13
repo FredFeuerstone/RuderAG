@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, ViewController, AlertController } from 'ionic-angular';
 import { RestProvider } from '../../providers/rest/rest';
 import { Storage } from '@ionic/storage';
 
-import { AlertController } from 'ionic-angular';
 import { HomePage } from '../home/home';
 
 @Component({
@@ -15,10 +14,14 @@ export class LoginPage {
   username: string;
   password: string;
 
-  constructor(public navCtrl: NavController, public restProvider: RestProvider, public storage: Storage, public alertCtrl: AlertController) {
+  constructor(public navCtrl: NavController, public viewCtrl: ViewController, public restProvider: RestProvider, public storage: Storage, public alertCtrl: AlertController) {
     // FOR DEBUGGING ONLY
     this.username = "admin";
     this.password = "p455w0rd";
+  }
+
+  dismiss() {
+    this.viewCtrl.dismiss();
   }
 
   login() {
@@ -33,8 +36,8 @@ export class LoginPage {
         password: this.password
       });
 
-      // Switch back to the home page
-      this.navCtrl.setRoot(HomePage);
+      // Switch back to the previous page
+      this.navCtrl.pop();
     }).catch(reason => {
       // Something didn't work. Show an error alert
       let alert = this.alertCtrl.create({
@@ -47,8 +50,8 @@ export class LoginPage {
   }
 
   logout() {
-    // Logout and switch to the home page
+    // Logout and switch to the previous
     this.restProvider.logout();
-    this.navCtrl.setRoot(HomePage);
+    this.navCtrl.pop();
   }
 }

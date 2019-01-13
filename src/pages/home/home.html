@@ -1,21 +1,4 @@
-<ion-header>
-  <ion-navbar color="primary">
-    <button ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </button>
-    <ion-title>Ruder AG</ion-title>
-  </ion-navbar>
-</ion-header>
-
 <ion-content>
-  <!-- Welcome header -->
-  <ion-item-divider>
-    <span>Startseite</span>
-    <button ion-button *ngIf="this.restProvider.groupId >= 1" clear color="secondary" item-end>
-      Profil
-    </button>
-  </ion-item-divider>
-
   <!-- Welcome card -->
   <ion-card *ngIf="!this.restProvider.user">
     <ion-item text-wrap>

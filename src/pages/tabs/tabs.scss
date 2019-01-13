@@ -1,0 +1,8 @@
+page-tabs {
+    // Make the tab bar a bit more dense (looks better with few tabs)
+    .tabs {
+        .tabbar {
+            padding: 0 10% !important;
+        }
+    }
+}

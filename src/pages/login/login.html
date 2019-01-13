@@ -1,50 +1,58 @@
 <ion-header>
-  <ion-navbar color="primary">
-    <button ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
+  <ion-toolbar color="primary">
+    <!-- menu toggle is needed to create the right padding -->
+    <button ion-button icon-only menuToggle (click)="dismiss()">
+      <ion-icon name="close"></ion-icon>
     </button>
+
     <ion-title>Login</ion-title>
-  </ion-navbar>
+
+    <ion-buttons end>
+      <button ion-button>Speichern</button>
+    </ion-buttons>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content>
-    <!-- Will be displayed if no user is logged in -->
-    <ion-card *ngIf="!this.restProvider.user">
-      <form (ngSubmit)="login()">
-        <!-- Login title -->
-        <ion-item text-wrap>
-          <ion-card-title>Login</ion-card-title>
-        </ion-item>
-  
-        <!-- Login username -->
-        <ion-item>
-          <ion-label color="primary" stacked>Benutzername</ion-label>
-          <ion-input [(ngModel)]="username" type="name" name="username"></ion-input>
-        </ion-item>
-  
-        <!-- Login password -->
-        <ion-item>
-          <ion-label color="primary" stacked>Passwort</ion-label>
-          <ion-input [(ngModel)]="password" type="password" name="password"></ion-input>
-        </ion-item>
-  
-        <!-- Submit button -->
-        <ion-item>
-          <button ion-button type="submit" full>Login</button>
-        </ion-item>
-      </form>
-    </ion-card>
+  <!-- Will be displayed if no user is logged in -->
+  <ion-list *ngIf="!this.restProvider.user">
+    <!-- Login username -->
+    <ion-item>
+      <ion-label floating>Benutzername</ion-label>
+      <ion-input [(ngModel)]="username" type="name" name="username"></ion-input>
+    </ion-item>
 
-    <!-- Will be displayed if a user is logged in -->
-    <ion-card *ngIf="this.restProvider.user">
-      <!-- Login title -->
-      <ion-item text-wrap>
-        <ion-card-title>Eingeloggt als {{this.restProvider.user.username}}</ion-card-title>
-      </ion-item>
+    <!-- Login password -->
+    <ion-item>
+      <ion-label floating>Passwort</ion-label>
+      <ion-input [(ngModel)]="password" type="password" name="password"></ion-input>
+    </ion-item>
 
-      <!-- Logout button -->
-      <ion-item>
-        <button ion-button (click)="logout()" full>Logout</button>
-      </ion-item>
-    </ion-card>
+    <!-- Submit button -->
+    <div padding>
+      <button ion-button (click)="login" full>Login</button>
+    </div>
+  </ion-list>
+
+  <!-- Will be displayed if a user is logged in -->
+  <ion-card *ngIf="this.restProvider.user">
+    <!-- Login title -->
+    <ion-item text-wrap>
+      <ion-card-title>Eingeloggt als {{this.restProvider.user.username}}</ion-card-title>
+    </ion-item>
+
+    <!-- Logout button -->
+    <ion-list>
+      <button ion-item (click)="logout()">Logout</button>
+    </ion-list>
+  </ion-card>
+  
+  <!-- Will be displayed if a user is logged in -->
+  <ion-card *ngIf="this.restProvider.user">
+    <!-- Login title -->
+    <ion-item text-wrap>
+      <ion-card-title>Blablabla, informationen über mein Profil ... ja, ja</ion-card-title>
+    </ion-item>
+  </ion-card>
+      
 </ion-content>

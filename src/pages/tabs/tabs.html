@@ -1,3 +1,17 @@
-<ion-tabs>
-    <ion-tab *ngFor="let t of tabs" [tabTitle]="t.tabTitle" [tabIcon]="t.tabIcon" [root]="t.component"></ion-tab>
-</ion-tabs>
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Ruder AG</ion-title>
+
+    <ion-buttons right>
+      <button ion-button icon-only (click)="openLoginPage()">
+        <ion-icon name="person"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-tabs #myTabs>
+    <ion-tab *ngFor="let p of pages" [tabTitle]="p.tabTitle" [tabIcon]="p.tabIcon" [root]="p.component"></ion-tab>
+  </ion-tabs>
+</ion-content>

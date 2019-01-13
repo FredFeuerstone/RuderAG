@@ -1,23 +1,37 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 
 import { HomePage } from '../home/home';
 import { InformationPage } from '../information/information';
 import { ListPage } from '../list/list';
+import { Tabs, NavController, ModalController } from 'ionic-angular';
 import { LoginPage } from '../login/login';
 
 @Component({
+  selector: 'page-tabs',
   templateUrl: 'tabs.html'
 })
 export class TabsPage {
 
-  tabs: Array<{tabTitle: string, tabIcon: string, component: any}>;
+  @ViewChild('myTabs') tabs: Tabs;
 
-  constructor() {
-    this.tabs = [
-      { tabTitle: 'Startseite', tabIcon: 'home', component: HomePage },
-      { tabTitle: 'Information', tabIcon: 'information-circle', component: InformationPage },
-      { tabTitle: 'Liste', tabIcon: 'list', component: ListPage },
-      { tabTitle: 'Login', tabIcon: 'key', component: LoginPage }
+  pages: Array<{tabTitle: string, tabIcon: string, component: any}>;
+
+  constructor(public navCtrl: NavController, public modalCtrl: ModalController) {
+    // Set all pages, that will be present in the tab bar
+    this.pages = [
+      { tabTitle: 'Anmeldung', tabIcon: 'clipboard', component: ListPage },
+      { tabTitle: 'Start', tabIcon: 'home', component: HomePage },
+      { tabTitle: 'Information', tabIcon: 'information-circle', component: InformationPage }
     ];
+  }
+
+  ionViewDidEnter() {
+    // Select the home page (id 1)
+    this.tabs.select(1);
+  }
+
+  openLoginPage() {
+    let loginModal = this.modalCtrl.create(LoginPage);
+    loginModal.present();
   }
 }
