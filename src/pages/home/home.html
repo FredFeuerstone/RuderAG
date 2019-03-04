@@ -1,6 +1,6 @@
 <ion-content>
   <!-- Welcome card -->
-  <ion-card *ngIf="!this.restProvider.user">
+  <ion-card *ngIf="true">
     <ion-item text-wrap>
       <ion-card-title>Herzlich Willkommen</ion-card-title>
     </ion-item>
@@ -11,7 +11,7 @@
     </ion-card-content>
   </ion-card>
 
-  <ion-card *ngIf="this.restProvider.user">
+  <ion-card *ngIf="false">
     <ion-item text-wrap>
       <ion-card-title>Ja Moin, {{this.restProvider.user.firstName}}</ion-card-title>
     </ion-item>
@@ -35,21 +35,33 @@
   <!-- Newsfeed header -->
   <ion-item-divider>
     <span>Aktuelles</span>
-    <button ion-button *ngIf="this.restProvider.groupId >= 2" clear color="secondary" (click)="addNewsfeed()" item-end>
+    <button ion-button *ngIf="this.restProvider.group_id >= 2" clear color="secondary" (click)="addNewsfeed()" item-end>
       Neuer Eintrag
     </button>
   </ion-item-divider>
+
+  <!-- Loading and error info -->
+  <ion-card *ngIf="fetchState === FetchState.fetching">
+    <ion-item text-wrap>
+      <p>Newsfeed wird abgerufen...</p>
+    </ion-item>
+  </ion-card>
+  <ion-card *ngIf="fetchState === FetchState.error">
+    <ion-item text-wrap>
+      <p>Newsfeed konnte nicht abgerufen werden.</p>
+    </ion-item>
+  </ion-card>
 
   <!-- Newsfeed cards -->
   <ion-card *ngFor="let news of newsfeed; let i = index">
     <!-- Title and event date -->
     <ion-item text-wrap>
       <ion-card-title>{{news.title}}</ion-card-title>
-      <p *ngIf="news.eventAt">am {{news.eventAt | date: "d. M. yyyy"}} um {{news.eventAt | date: "HH:mm"}}</p>
+      <h2 *ngIf="news.event_at">am {{news.event_at | date: "dd. MM. yyyy"}} um {{news.event_at | date: "HH:mm"}}</h2>
 
-      <!-- Delete Button -->
-      <button *ngIf="this.restProvider.groupId >= 2" ion-button icon-only clear color="danger" (click)="deleteNewsfeed(i)" item-end>
-        <ion-icon name="trash"></ion-icon>
+      <!-- Edit Button -->
+      <button ion-button *ngIf="this.restProvider.group_id >= 2" icon-only clear color="secondary" item-end>
+        <ion-icon name="create"></ion-icon>
       </button>
     </ion-item>
 
@@ -62,7 +74,7 @@
     <ion-row>
       <ion-col center text-center>
         <ion-note>
-            Erstellt am {{news.createdAt | date: "d. M. yyyy"}} um {{news.createdAt | date: "HH:mm"}}
+            Erstellt am {{news.created_at | date: "dd. MM. yyyy"}} um {{news.created_at | date: "HH:mm"}}
         </ion-note>
       </ion-col>
     </ion-row>

@@ -1,9 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
-import { IonicStorageModule } from '@ionic/storage';
 
-import { Config } from './app.config';
 import { MyApp } from './app.component';
 import { TabsPage } from '../pages/tabs/tabs';
 import { HomePage } from '../pages/home/home';
@@ -14,8 +12,10 @@ import { LoginPage } from '../pages/login/login';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
+import { IonicStorageModule, Storage } from '@ionic/storage';
 import { JwtModule } from '@auth0/angular-jwt';
 import { HttpClientModule } from '@angular/common/http';
+import { Config } from './../providers/config/config';
 import { RestProvider } from '../providers/rest/rest';
 
 @NgModule({
@@ -29,20 +29,30 @@ import { RestProvider } from '../providers/rest/rest';
   ],
   imports: [
     BrowserModule,
-    HttpClientModule,
-    JwtModule.forRoot({
+    /* JwtModule.forRoot({
       config: {
         tokenGetter: () => {
-          return localStorage.getItem('access_token'); // <- This works. I tested it!
+          return localStorage.get('token'); // <- This works. I tested it!
         },
         whitelistedDomains: [Config.apiDomain],
         blacklistedRoutes: [],
         skipWhenExpired: true
       }
-    }),
+    }), */
     IonicModule.forRoot(MyApp),
-    IonicStorageModule.forRoot()
-
+    IonicStorageModule.forRoot(),
+    HttpClientModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: () => {
+          return localStorage.getItem('token');
+        },
+        whitelistedDomains: [ Config.apiDomain ],
+        blacklistedRoutes: [
+          `${Config.apiBaseUrl}/login`
+        ]
+      }
+    })
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -56,7 +66,8 @@ import { RestProvider } from '../providers/rest/rest';
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    { provide: ErrorHandler, useClass: IonicErrorHandler },
+    Config,
     RestProvider
   ]
 })

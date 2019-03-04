@@ -3,8 +3,8 @@ import { Nav, Platform } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
+import { RestProvider } from './../providers/rest/rest';
 import { Storage } from '@ionic/storage';
-import { RestProvider } from '../providers/rest/rest';
 
 import { TabsPage } from '../pages/tabs/tabs';
 
@@ -19,7 +19,7 @@ export class MyApp {
 
   //pages: Array<{title: string, icon: string, component: any}>;
 
-  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, public storage: Storage, public restProvider: RestProvider) {
+  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, private restProvider: RestProvider, private storage: Storage) {
     this.initializeApp();
 
     // Set the pages
@@ -38,11 +38,11 @@ export class MyApp {
       this.splashScreen.hide();
 
       // If we have stored credentials, try to log in. If the login fails, just ignore it.
-      this.storage.get('loginCredentials').then(loginCredentials => {
+      /* this.storage.get('loginCredentials').then(loginCredentials => {
         if (loginCredentials) {
           this.restProvider.login(loginCredentials);
         }
-      })
+      }) */
     });
   }
 

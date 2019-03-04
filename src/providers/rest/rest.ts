@@ -1,7 +1,11 @@
-import { Storage } from '@ionic/storage';
-import { Config } from '../../app/app.config';
+import { AlertController } from 'ionic-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+
+import { Storage } from '@ionic/storage';
+import { JwtHelperService } from '@auth0/angular-jwt';
+
+import { Config } from './../config/config';
 
 /*
   Generated class for the RestProvider provider.
@@ -11,98 +15,182 @@ import { Injectable } from '@angular/core';
 */
 @Injectable()
 export class RestProvider {
-  user = null;
-  groupId = 0;
-  
-  constructor(public http: HttpClient, public storage: Storage) {
-    // TODO: GET AND POST WON'T ACCEPT BODIES.
+
+  group_id = 0;
+  profile = null;
+
+  constructor(private http: HttpClient, private storage: Storage, private jwtHelper: JwtHelperService, private alertCtrl: AlertController) {
+    // Try to login using the stored token
+    if (localStorage.getItem('token'))
+      this.fetchProfile()
+        .then(() => console.log(`Autologin as ${this.profile.username}.`))
+        .catch((err) => {
+          // Print the error and make sure we are logged out
+          console.error('Autologin failed.');
+          this.logout();
+        });
   }
 
-  login(loginCredentials) {
+  errorAlert(err) {
+    let alert = this.alertCtrl.create({
+      title: 'Fehler',
+      subTitle: err,
+      buttons: ['Ok']
+    });
+    alert.present();
+  }
+
+  login(userCredentials: { username: string, password: string }) {
     return new Promise((resolve, reject) => {
-      this.http.post(Config.apiUrl + '/login', loginCredentials).subscribe(data => {
-        // Set the token
-        localStorage.setItem('access_token', data['token']);
-        console.log('new token: ' + data['token']);
+      // Send a login request
+      this.http.post(`${Config.apiBaseUrl}/login`, {
+        username: userCredentials.username,
+        password: userCredentials.password
+      })
+        .subscribe(
+          (json: any) => {
+            // For some reason the server didn't sent a user token
+            let token = json.token;
+            if (!token) reject('Es wurde kein Benutzertoken übermittelt');
 
-        // Set the user
-        this.user = data;
+            // Store the token
+            localStorage.setItem('token', token);
 
-        // Set the group id
-        this.groupId = data['groupId'];
-        resolve();
-      }, err => {
-        console.log(err);
-        reject(err.error);
-      });
+            // Fetch the user profile. Resolve on success, otherwise reject
+            this.fetchProfile()
+              .then(() => resolve())
+              .catch((err) => reject(err));
+          },
+          (err: any) => reject(this.getErrorMessage(err))
+        );
     });
   }
 
   logout() {
-    // Clear the token
-    localStorage.removeItem('access_token');
-
-    // Forget the current user.
-    this.user = null;
-
-    // Set the group id to guest
-    this.groupId = 0;
-  }
-
-  indexUsers() {
     return new Promise((resolve, reject) => {
-      this.http.get(Config.apiUrl + '/users').subscribe(data => {
-        resolve(data);
-      }, err => {
-        reject(err.error);
-      });
+      // Remove token from local storage
+      localStorage.removeItem('token');
+      this.group_id = 0;
+      this.profile = null;
+      resolve();
     });
   }
 
-  getAttendance(username) {
+  fetchProfile() {
     return new Promise((resolve, reject) => {
-      this.http.get(Config.apiUrl + '/attendances/byusername', {
-        //username: username
-      }).subscribe(data => {
-        resolve();
-      }, err => {
-        reject(err.error);
-      })
-    })
+      // Send a request to get the current profile
+      this.http.get(`${Config.apiBaseUrl}/users/me`)
+        .subscribe(
+          (json: any) => {
+            // Set the profile and resolve
+            this.group_id = json.group_id;
+            this.profile = json;
+            resolve();
+          },
+          (err: any) => reject(this.getErrorMessage(err))
+        );
+    });
   }
 
-  putAttendance(username, attendant) {
+  listUsers() {
     return new Promise((resolve, reject) => {
-      this.http.put(Config.apiUrl + '/attendances/byusername', {
-        username: username,
+      // Send a request to get all users
+      this.http.get(`${Config.apiBaseUrl}/users`)
+        .subscribe(
+          (json: any) => resolve(json),
+          (err: any) => reject(this.getErrorMessage(err))
+        );
+    });
+  }
+
+  listAttendances() {
+    return new Promise((resolve, reject) => {
+      // Send a request to get all attendances
+      this.http.get(`${Config.apiBaseUrl}/attendances`)
+        .subscribe(
+          (json: any) => resolve(json),
+          (err: any) => reject(this.getErrorMessage(err))
+        );
+    });
+  }
+
+  getAttendance(user_id: number) {
+    return new Promise((resolve, reject) => {
+      // Send a request to get a single attendance
+      this.http.get(`${Config.apiBaseUrl}/attendances/${user_id}`)
+        .subscribe(
+          (json: any) => resolve(json),
+          (err: any) => reject(this.getErrorMessage(err))
+        );
+    });
+  }
+
+  getProfileAttendance() {
+    return new Promise((resolve, reject) => {
+      // Send a request to get the own profile's attendance
+      this.http.get(`${Config.apiBaseUrl}/attendances/me`)
+        .subscribe(
+          (json: any) => resolve(json),
+          (err: any) => reject(this.getErrorMessage(err))
+        );
+    });
+  }
+
+  changeAttendance(user_id: number, attendant: boolean) {
+    return new Promise((resolve, reject) => {
+      // Send a request to change a single attendance
+      this.http.put(`${Config.apiBaseUrl}/attendances/${user_id}`, {
         attendant: attendant
-      }).subscribe(data => {
-        resolve();
-      }, err => {
-        reject(err.error);
       })
-    })
-  }
-
-  getNewsfeed() {
-    return new Promise(resolve => {
-      this.http.get(Config.apiUrl + '/newsfeed').subscribe(data => {
-        resolve(data);
-      }, err => {
-        console.log(err);
-        resolve([]); // We couldn't fetch the array, return an empty one
-      });
+        .subscribe(
+          (json: any) => resolve(json),
+          (err: any) => reject(this.getErrorMessage(err))
+        );
     });
   }
 
-  deleteNewsfeed(id) {
-    return new Promise(resolve => {
-      this.http.delete(Config.apiUrl + '/newsfeed/byid').subscribe(data => {
-        resolve(data);
-      }, err => {
-        console.log(err);
-        resolve([]); // We couldn't fetch the array, return an empty one
-      });
+  changeProfileAttendance(attendant: boolean) {
+    return new Promise((resolve, reject) => {
+      // Send a request to change the own profile's attendance
+      this.http.put(`${Config.apiBaseUrl}/attendances/me`, {
+        attendant: attendant
+      })
+        .subscribe(
+          (json: any) => resolve(json),
+          (err: any) => reject(this.getErrorMessage(err))
+        );
     });
   }
+
+  listNewsfeed() {
+    return new Promise((resolve, reject) => {
+      // Send a request to get all newsfeed items
+      this.http.get(`${Config.apiBaseUrl}/newsfeed`)
+        .subscribe(
+          (json: any) => resolve(json),
+          (err: any) => reject(this.getErrorMessage(err))
+        );
+    });
+  }
+
+  private getErrorMessage(err) {
+    // Print an error message to the console
+    console.error(err);
+
+    // Return the error message (use the server's custom message if available)
+    if (err.error.error) return err.error.error;
+    return err.message;
+  }
+}
+
+export enum FetchState {
+  fetching,
+  success,
+  error
+}
+
+export enum UserGroup {
+  guest = 0,
+  member = 1,
+  admin = 2
 }

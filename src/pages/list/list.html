@@ -1,33 +1,47 @@
 <ion-content>
-  <!-- A small info text -->
-  <ion-card>
+  <!-- Info for non-authorized users -->
+  <ion-card *ngIf="restProvider.group_id === UserGroup.guest">
     <ion-item text-wrap>
-        <p>
-          Es wäre gut wenn du dich immer auch auf die Liste schreibst, die <b>vor dem Raum 033 am schwarzen Brett</b> aushängt.
-          Wenn du kurzfristig doch nicht kannst, sag jemandem Bescheid und trag dich hier, sowie auf von der Liste am Brett aus.
-        </p>
-      </ion-item>
+      <p>
+        Die Anmeldeliste ist nur für Mitglieder der Ruder AG sichtbar.
+        Falls du ein Mitglied bist, logge dich bitte oben rechts mit deinen Anmeldedaten ein.
+      </p>
+    </ion-item>
+  </ion-card>
+
+  <!-- A small info text -->
+  <ion-card *ngIf="restProvider.group_id > UserGroup.guest">
+    <ion-item text-wrap>
+      <p>
+        Es wäre gut wenn du dich immer auch auf die Liste schreibst, die <b>vor dem Raum 033 am schwarzen Brett</b> aushängt.
+        Wenn du kurzfristig doch nicht kannst, sag jemandem Bescheid und trag dich hier, sowie auf von der Liste am Brett aus.
+      </p>
+    </ion-item>
   </ion-card>
 
   <!-- Attendance list -->
-  <ion-card>
+  <ion-card *ngIf="restProvider.group_id > UserGroup.guest">
     <ion-item>
       <ion-card-title>Anmeldung Samstag</ion-card-title>
     </ion-item>
 
-    <!-- <ion-item>
-      <ion-label color="primary">Kommst du am Samstag?</ion-label>
-      <ion-checkbox color="dark" [(ngModel)]="Checkbox" (ionChange)="updateCheckbox()"></ion-checkbox>
-    </ion-item> -->
+    <ion-item *ngIf="fetchState === FetchState.fetching" text-wrap>
+      <p>Anmeldeliste wird abgerufen...</p>
+    </ion-item>
 
-    <ion-list>
-      <ion-item color="light">
-        <ion-label item-start><b>Ich</b></ion-label>
-        <ion-checkbox [(ngModel)]="ownAttendance" (ionChange)="updateOwnAttendant()" item-end></ion-checkbox>
+    <ion-item *ngIf="fetchState === FetchState.error" text-wrap>
+      <p>Die Anmeldeliste konnte nicht abgerufen werden.</p>
+    </ion-item>
+
+    <ion-list *ngIf="fetchState === FetchState.success">
+      <ion-item color="light" text-wrap>
+        <ion-label *ngIf="restProvider.group_id === UserGroup.admin" item-start><b>{{restProvider.profile.first_name}} {{restProvider.profile.last_name}} (Ich)</b></ion-label>
+        <ion-label *ngIf="restProvider.group_id === UserGroup.member" item-start>Kommst du am Samstag?</ion-label>
+        <ion-checkbox [(ngModel)]="attendant" (ionChange)="attendantStateChanged()" item-end></ion-checkbox>
       </ion-item>
-      <ion-item *ngFor="let user of users">
-        <ion-label item-start>{{user.firstName}} {{user.lastName}}</ion-label>
-        <ion-checkbox disabled [checked]="user.attendant == '1'" item-end></ion-checkbox>
+      <ion-item *ngFor="let attendance of attendances" text-wrap>
+        <ion-label item-start>{{ attendance.first_name }} {{ attendance.last_name }}</ion-label>
+        <ion-checkbox disabled [checked]="attendance.attendant" item-end></ion-checkbox>
       </ion-item>
     </ion-list>
   </ion-card>

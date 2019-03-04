@@ -1,7 +1,6 @@
+import { RestProvider, FetchState } from './../../providers/rest/rest';
 import { Component } from '@angular/core';
 import { NavController, ModalController, AlertController } from 'ionic-angular';
-
-import { RestProvider } from '../../providers/rest/rest';
 
 @Component({
   selector: 'page-home',
@@ -9,25 +8,33 @@ import { RestProvider } from '../../providers/rest/rest';
 })
 export class HomePage {
 
-  newsfeed: any;
+  FetchState = FetchState;
+  fetchState: FetchState;
 
-  constructor(public navCtrl: NavController, public restProvider: RestProvider, private alertCtrl: AlertController, private modalCtrl: ModalController) {
-    this.loadNewsfeed();
+  newsfeed: Array<any>;
+
+  constructor(private restProvider: RestProvider, public navCtrl: NavController, private alertCtrl: AlertController, private modalCtrl: ModalController) {}
+
+  ionViewWillEnter() {
+    this.fetchState = FetchState.fetching;
+    this.newsfeed = [];
+    this.fetchNewsfeed();
   }
 
-  loadNewsfeed() {
-    this.restProvider.getNewsfeed()
-      .then(data => {
-        this.newsfeed = data;
+  fetchNewsfeed() {
+    this.restProvider.listNewsfeed()
+      .then(newsfeed => {
+        this.newsfeed = newsfeed as Array<any>;
+        this.fetchState = FetchState.success;
       })
-  }
-
-  addNewsfeed() {
-    
+      .catch((err) => {
+        console.error(err)
+        this.fetchState = FetchState.error;
+      });
   }
 
   deleteNewsfeed(index) {
-    let alert = this.alertCtrl.create({
+    /* let alert = this.alertCtrl.create({
       title: 'Newsfeed Eintrag Löschen',
       subTitle: 'Möchtest du diesen Eintrag löschen?',
       buttons: [
@@ -41,6 +48,6 @@ export class HomePage {
         }
       ]
     });
-    alert.present();
+    alert.present(); */
   }
 }

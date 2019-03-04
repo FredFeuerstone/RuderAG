@@ -1,46 +1,76 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
-import { RestProvider } from '../../providers/rest/rest';
+import { RestProvider, UserGroup, FetchState } from '../../providers/rest/rest';
 
 @Component({
   selector: 'page-list',
   templateUrl: 'list.html'
 })
 export class ListPage {
+  UserGroup = UserGroup;
+  FetchState = FetchState;
 
-  ownAttendance: Boolean;
-  users: any;
+  attendant: boolean;
+  attendances: Array<any>;
 
-  constructor(public navCtrl: NavController, public restProvider: RestProvider) {
-    this.loadAttendances();
+  fetchState: FetchState;
+
+  constructor(private restProvider: RestProvider, public navCtrl: NavController) {
+    this.attendant = null;
+    this.attendances = null;
+
+    this.fetchState = FetchState.fetching;
   }
 
-  loadAttendances() {
-    // Read the attendances of all users, if we are admin
-    if (this.restProvider.groupId >= 2) {
-      this.restProvider.indexUsers().then((data) => {
-        this.users = data;
+  ionViewWillEnter() {
+    this.fetchState = FetchState.fetching;
+    this.fetchAttendances();
+  }
 
-        this.users.forEach((user) => {
-          if (user.username == this.restProvider.user.username) {
-            this.ownAttendance = user.attendant == '1';
-          }
-        })
-      }).catch((reason) => {
-        // Oh no, something failed. Just set the users to null.
-        this.users = null;
-        console.log(reason.error);
-      });
-    } else {
-      // We don't have admin permissions, set the users to null, so they won't be displayed.
-      this.users = null;
+  fetchAttendances() {
+    // Return if we are no member
+    if (this.restProvider.group_id < UserGroup.member) {
+      this.fetchState = FetchState.error;
+      return;
     }
+
+    // Get the current user's attendance
+    this.restProvider.getProfileAttendance()
+      .then((attendance: any) => {
+        // Update the current attendance and set the fetch state
+        this.attendant = attendance.attendant;
+        this.fetchState = FetchState.success;
+      })
+      .catch((err) => {
+        // Something went wrong. Set the fetch state to error
+        console.error(err)
+        this.fetchState = FetchState.error;
+      });
+
+    // Return if we are no admin
+    if (this.restProvider.group_id < UserGroup.admin) return;
+
+    // Get the attendances of all (other) users
+    this.restProvider.listAttendances()
+      .then((attendances) => {
+        this.attendances = (attendances as Array<any>)
+          .filter((att) => att.user_id != this.restProvider.profile.user_id);
+      })
+      .catch((err) => console.error(err));
   }
 
-  updateOwnAttendant() {
-    this.restProvider.putAttendance(this.restProvider.user.username, this.ownAttendance)
+  attendantStateChanged() {
+    // Return if we are no member
+    if (this.restProvider.group_id < UserGroup.member) return;
+
+    // Change the current user's attendance
+    this.restProvider.changeProfileAttendance(this.attendant)
       .then(() => {
-        this.loadAttendances();
+        // Success -> refetch all attendances
+        this.fetchAttendances();
+      })
+      .catch((err) => {
+        console.error(`Couldn't load attendances: ${err}`);
       });
   }
 }

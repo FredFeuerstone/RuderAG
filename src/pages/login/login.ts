@@ -1,9 +1,6 @@
+import { RestProvider, UserGroup } from './../../providers/rest/rest';
 import { Component } from '@angular/core';
 import { NavController, ViewController, AlertController } from 'ionic-angular';
-import { RestProvider } from '../../providers/rest/rest';
-import { Storage } from '@ionic/storage';
-
-import { HomePage } from '../home/home';
 
 @Component({
   selector: 'page-login',
@@ -11,13 +8,26 @@ import { HomePage } from '../home/home';
 })
 export class LoginPage {
 
-  username: string;
-  password: string;
+  UserGroup = UserGroup;
 
-  constructor(public navCtrl: NavController, public viewCtrl: ViewController, public restProvider: RestProvider, public storage: Storage, public alertCtrl: AlertController) {
+  credentials: {
+    username: string,
+    password: string
+  };
+
+  users: Array<any>;
+
+  constructor(public navCtrl: NavController, public viewCtrl: ViewController, private restProvider: RestProvider, public alertCtrl: AlertController) {
     // FOR DEBUGGING ONLY
-    this.username = "admin";
-    this.password = "p455w0rd";
+    this.credentials = {
+      username: 'admin',
+      password: 'p455w0rd'
+    };
+  }
+
+  ionViewWillEnter() {
+    // Fetch all users if we are an admin
+    if (this.restProvider.group_id === UserGroup.admin) this.fetchUsers();
   }
 
   dismiss() {
@@ -25,33 +35,33 @@ export class LoginPage {
   }
 
   login() {
-    this.restProvider.login({
-      username: this.username,
-      password: this.password
-    }).then(() => {
-      // Store the login credentials. This way we will be logged in automatically the next time
-      // the app ist opened (see app/app.component.ts constructor)
-      this.storage.set('loginCredentials', {
-        username: this.username,
-        password: this.password
-      });
+    this.restProvider.login(this.credentials)
+      .then(() => {
+        // Set the current profile and copy to the profile to be edited
+        console.log(`Logged in as ${this.restProvider.profile.username}.`);
 
-      // Switch back to the previous page
-      this.navCtrl.pop();
-    }).catch(reason => {
-      // Something didn't work. Show an error alert
-      let alert = this.alertCtrl.create({
-        title: 'Fehler',
-        subTitle: reason.error,
-        buttons: ['Ok']
-      });
-      alert.present();
-    });
+        // Switch back to the previous page
+        this.viewCtrl.dismiss();
+      }).catch(err => this.restProvider.errorAlert(err));
   }
 
   logout() {
     // Logout and switch to the previous
-    this.restProvider.logout();
-    this.navCtrl.pop();
+    this.restProvider.logout()
+      .then(() => {
+        this.viewCtrl.dismiss();
+      })
+      .catch((err) => this.restProvider.errorAlert(err));
+  }
+
+  fetchUsers() {
+    // Store all users into the users array
+    this.restProvider.listUsers()
+      .then((users) => {
+        this.users = users as Array<any>;
+      })
+      .catch((err) => {
+        console.error(err);
+      })
   }
 }

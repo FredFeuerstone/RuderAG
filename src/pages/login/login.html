@@ -5,53 +5,78 @@
       <ion-icon name="close"></ion-icon>
     </button>
 
-    <ion-title>Login</ion-title>
+    <ion-title *ngIf="!this.restProvider.profile">Profil</ion-title>
+    <ion-title *ngIf="this.restProvider.profile">Hallo {{ this.restProvider.profile.first_name }}</ion-title>
 
-    <ion-buttons end>
-      <button ion-button>Speichern</button>
+    <ion-buttons end *ngIf="this.restProvider.profile">
+      <button ion-button (click)="logout()">Logout</button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <!-- Will be displayed if no user is logged in -->
-  <ion-list *ngIf="!this.restProvider.user">
+  <ion-list *ngIf="!this.restProvider.profile">
     <!-- Login username -->
-    <ion-item>
-      <ion-label floating>Benutzername</ion-label>
-      <ion-input [(ngModel)]="username" type="name" name="username"></ion-input>
+    <ion-item padding-right>
+      <ion-label color="primary">Benutzername</ion-label>
+      <ion-input [(ngModel)]="credentials.username" type="name" name="username"></ion-input>
     </ion-item>
 
     <!-- Login password -->
-    <ion-item>
-      <ion-label floating>Passwort</ion-label>
-      <ion-input [(ngModel)]="password" type="password" name="password"></ion-input>
+    <ion-item padding-right>
+      <ion-label color="primary">Passwort</ion-label>
+      <ion-input [(ngModel)]="credentials.password" type="password" name="password"></ion-input>
     </ion-item>
 
     <!-- Submit button -->
-    <div padding>
-      <button ion-button (click)="login" full>Login</button>
-    </div>
+    <ion-item>
+      <button ion-button color="primary" (click)="login()" full>Login</button>
+    </ion-item>
   </ion-list>
 
   <!-- Will be displayed if a user is logged in -->
-  <ion-card *ngIf="this.restProvider.user">
-    <!-- Login title -->
+  <ion-card *ngIf="this.restProvider.profile">
     <ion-item text-wrap>
-      <ion-card-title>Eingeloggt als {{this.restProvider.user.username}}</ion-card-title>
+      <ion-card-title>Mein Profil</ion-card-title>
+
+      <!-- Edit Button -->
+      <button ion-button clear color="secondary" item-end>
+        Bearbeiten
+      </button>
     </ion-item>
 
-    <!-- Logout button -->
-    <ion-list>
-      <button ion-item (click)="logout()">Logout</button>
-    </ion-list>
+    <ion-card-content>
+      <ion-item no-padding>
+        <p>Name</p>
+        <h2>{{ this.restProvider.profile.first_name }} {{ this.restProvider.profile.last_name }}</h2>
+      </ion-item>
+
+      <ion-item no-padding>
+        <p>Benutzername</p>
+        <h2>{{ this.restProvider.profile.username }}</h2>
+      </ion-item>
+
+      <ion-item no-padding>
+        <p>Gruppe</p>
+        <h2>{{ ['Gast', 'Mitglied', 'Admin'][this.restProvider.profile.group_id] }}</h2>
+      </ion-item>
+    </ion-card-content>
   </ion-card>
-  
-  <!-- Will be displayed if a user is logged in -->
-  <ion-card *ngIf="this.restProvider.user">
-    <!-- Login title -->
+
+  <!-- List of all users (for admins only) -->
+  <ion-card *ngIf="restProvider.group_id === UserGroup.admin">
     <ion-item text-wrap>
-      <ion-card-title>Blablabla, informationen über mein Profil ... ja, ja</ion-card-title>
+      <ion-card-title>Benutzerliste</ion-card-title>
+    </ion-item>
+
+    <ion-item *ngFor="let user of users">
+      <h2 ion-text [color]="user.group_id === UserGroup.admin ? 'primary' : null">{{user.first_name}} {{user.last_name}} ({{user.username}})</h2>
+
+      <!-- Edit Button -->
+      <button ion-button clear color="secondary" item-end>
+        Bearbeiten
+      </button>
     </ion-item>
   </ion-card>
       
