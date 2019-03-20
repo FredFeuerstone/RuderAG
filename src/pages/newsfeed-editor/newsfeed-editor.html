@@ -1,0 +1,62 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <!-- menu toggle is needed to create the right padding -->
+    <button ion-button icon-only menuToggle (click)="dismiss()">
+      <ion-icon name="close"></ion-icon>
+    </button>
+
+    <ion-title *ngIf="mode == Mode.create">Neuer Eintrag</ion-title>
+    <ion-title *ngIf="mode == Mode.change">Eintrag Bearbeiten</ion-title>
+
+    <ion-buttons end>
+      <button ion-button *ngIf="mode == Mode.create" (click)="storeNewsfeed()">Erstellen</button>
+      <button ion-button *ngIf="mode == Mode.change" (click)="storeNewsfeed()">Speichern</button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card *ngIf="fetchState === FetchState.fetching">
+    <ion-item text-wrap>
+      <p>Newsfeed wird abgerufen...</p>
+    </ion-item>
+  </ion-card>
+
+  <ion-list *ngIf="fetchState == FetchState.success">
+    <!-- Title -->
+    <ion-item padding-right>
+      <ion-label color="primary" stacked>Titel</ion-label>
+      <ion-input [(ngModel)]="newsfeed.title" type="text" name="title" placeholder="Neues Event"></ion-input>
+    </ion-item>
+
+    <!-- Content -->
+    <ion-item padding-right>
+      <ion-label color="primary" stacked>Beschreibung</ion-label>
+      <ion-textarea rows="6" [(ngModel)]="newsfeed.content" name="content" placeholder="Kann freigelassen werden, muss aber nicht."></ion-textarea>
+    </ion-item>
+
+    <!-- Event Enabled -->
+    <ion-item>
+      <ion-label>Event mit Datum</ion-label>
+      <ion-checkbox [(ngModel)]="event_at_enabled" name="event_at_enabled"></ion-checkbox>
+    </ion-item>
+
+    <!-- Event Date -->
+    <ion-item *ngIf="event_at_enabled" padding-right>
+      <ion-label color="primary">Datum</ion-label>
+      <ion-datetime [(ngModel)]="newsfeed.event_at_date" displayFormat="DD. MM. YYYY" placeholder="zum Auswählen tippen"></ion-datetime>
+    </ion-item>
+
+    <!-- Event Time -->
+    <ion-item *ngIf="event_at_enabled" padding-right>
+      <ion-label color="primary">Uhrzeit</ion-label>
+      <ion-datetime [(ngModel)]="newsfeed.event_at_time" displayFormat="HH:mm" placeholder="zum Auswählen tippen"></ion-datetime>
+    </ion-item>
+  </ion-list>
+</ion-content>
+
+<ion-footer *ngIf="fetchState == FetchState.success">
+  <button *ngIf="mode === Mode.change" (click)="confirmRemoveNewsfeed()" ion-button color="danger" full>
+    Event Löschen
+  </button>
+</ion-footer>

@@ -5,8 +5,8 @@
       <ion-icon name="close"></ion-icon>
     </button>
 
-    <ion-title *ngIf="!this.restProvider.profile">Profil</ion-title>
-    <ion-title *ngIf="this.restProvider.profile">Hallo {{ this.restProvider.profile.first_name }}</ion-title>
+    <ion-title *ngIf="!this.restProvider.profile">Login</ion-title>
+    <ion-title *ngIf="this.restProvider.profile">Mein Profil</ion-title>
 
     <ion-buttons end *ngIf="this.restProvider.profile">
       <button ion-button (click)="logout()">Logout</button>
@@ -37,27 +37,26 @@
 
   <!-- Will be displayed if a user is logged in -->
   <ion-card *ngIf="this.restProvider.profile">
-    <ion-item text-wrap>
-      <ion-card-title>Mein Profil</ion-card-title>
-
-      <!-- Edit Button -->
-      <button ion-button clear color="secondary" item-end>
-        Bearbeiten
-      </button>
-    </ion-item>
-
     <ion-card-content>
-      <ion-item no-padding>
+      <!-- Name -->
+      <ion-item text-wrap no-padding>
         <p>Name</p>
         <h2>{{ this.restProvider.profile.first_name }} {{ this.restProvider.profile.last_name }}</h2>
+
+        <!-- Edit Button -->
+        <button ion-button icon-only (click)="changeProfile()" clear color="secondary" item-end>
+            <ion-icon name="create"></ion-icon>
+        </button>
       </ion-item>
 
-      <ion-item no-padding>
+      <!-- Username -->
+      <ion-item text-wrap no-padding>
         <p>Benutzername</p>
         <h2>{{ this.restProvider.profile.username }}</h2>
       </ion-item>
 
-      <ion-item no-padding>
+      <!-- Group -->
+      <ion-item text-wrap no-padding>
         <p>Gruppe</p>
         <h2>{{ ['Gast', 'Mitglied', 'Admin'][this.restProvider.profile.group_id] }}</h2>
       </ion-item>
@@ -65,19 +64,28 @@
   </ion-card>
 
   <!-- List of all users (for admins only) -->
-  <ion-card *ngIf="restProvider.group_id === UserGroup.admin">
-    <ion-item text-wrap>
-      <ion-card-title>Benutzerliste</ion-card-title>
-    </ion-item>
+  <div *ngIf="restProvider.group_id === UserGroup.admin">
+    <ion-item-divider>
+      <span>Benutzerliste</span>
+      <button ion-button clear color="secondary" (click)="createUser()" item-end>
+        Neuer Account
+      </button>
+    </ion-item-divider>
 
-    <ion-item *ngFor="let user of users">
-      <h2 ion-text [color]="user.group_id === UserGroup.admin ? 'primary' : null">{{user.first_name}} {{user.last_name}} ({{user.username}})</h2>
+    <ion-item *ngFor="let user of users; let i = index" text-wrap>
+      <!-- Name and username -->
+      <h2 ion-text [color]="user.group_id == UserGroup.admin ? 'secondary' : null">
+        <span *ngIf="user.user_id === 1">Standard Administrator</span>
+        <span *ngIf="user.user_id !== 1">
+          {{user.first_name}} {{user.last_name}} ({{user.username}})
+        </span>
+      </h2>
 
       <!-- Edit Button -->
-      <button ion-button clear color="secondary" item-end>
-        Bearbeiten
+      <button ion-button icon-only clear color="secondary" (click)="changeUser(user.user_id)" item-end>
+        <ion-icon name="create"></ion-icon>
       </button>
     </ion-item>
-  </ion-card>
+  </div>
       
 </ion-content>

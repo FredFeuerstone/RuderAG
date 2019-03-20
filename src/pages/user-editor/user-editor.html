@@ -1,0 +1,73 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <!-- menu toggle is needed to create the right padding -->
+    <button ion-button icon-only menuToggle (click)="dismiss()">
+      <ion-icon name="close"></ion-icon>
+    </button>
+
+    <ion-title *ngIf="mode === Mode.create">Neuer Account</ion-title>
+    <ion-title *ngIf="mode === Mode.changeAny">Benutzer Bearbeiten</ion-title>
+    <ion-title *ngIf="mode === Mode.changeProfile">Account Bearbeiten</ion-title>
+
+    <ion-buttons end>
+      <button ion-button *ngIf="mode === Mode.create" (click)="storeUser()">Erstellen</button>
+      <button ion-button *ngIf="mode !== Mode.create" (click)="storeUser()">Speichern</button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card *ngIf="fetchState === FetchState.fetching">
+    <ion-item text-wrap>
+      <p>Benutzer wird abgerufen...</p>
+    </ion-item>
+  </ion-card>
+
+  <ion-list *ngIf="fetchState == FetchState.success">
+    <!-- User Group -->
+    <ion-item padding-right>
+      <ion-label color="primary" stacked>Gruppe</ion-label>
+      <ion-select [(ngModel)]="user.group_id" value="1" okText="Ok" cancelText="Abbrechen" name="group_id"
+        [disabled]="mode === Mode.changeProfile || user.user_id === 1">
+        <ion-option value="1">Mitglied</ion-option>
+        <ion-option value="2">Admin</ion-option>
+      </ion-select>
+    </ion-item>
+
+    <!-- First Name -->
+    <ion-item padding-right>
+      <ion-label color="primary" for="first_name" stacked>Vorname</ion-label>
+      <ion-input [(ngModel)]="user.first_name" type="name" type="text" name="first_name"
+        [disabled]="user.user_id === 1"></ion-input>
+    </ion-item>
+
+    <!-- Last Name -->
+    <ion-item padding-right>
+      <ion-label color="primary" stacked>Nachname</ion-label>
+      <ion-input [(ngModel)]="user.last_name" type="name" name="last_name"
+        [disabled]="user.user_id === 1"></ion-input>
+    </ion-item>
+
+    <!-- Username -->
+    <ion-item padding-right>
+      <ion-label color="primary" stacked>Benutzername</ion-label>
+      <ion-input [(ngModel)]="user.username" type="username" name="username"
+        [disabled]="user.user_id === 1"></ion-input>
+    </ion-item>
+
+    <!-- Password -->
+    <ion-item padding-right>
+      <ion-label color="primary" stacked>
+        Passwort <span *ngIf="mode !== Mode.create">(freilassen um altes Passwort beizubehalten)</span>
+      </ion-label>
+      <ion-input [(ngModel)]="user.password" type="password" name="password"></ion-input>
+    </ion-item>
+  </ion-list>
+</ion-content>
+
+<ion-footer *ngIf="fetchState == FetchState.success">
+  <button *ngIf="mode !== Mode.create" (click)="confirmRemoveUser()" ion-button color="danger" full
+    [disabled]="user.user_id === 1">
+    Account Löschen
+  </button>
+</ion-footer>

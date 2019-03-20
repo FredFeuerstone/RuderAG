@@ -1,4 +1,9 @@
 <ion-content>
+  <!-- Refresher -->
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
   <!-- Info for non-authorized users -->
   <ion-card *ngIf="restProvider.group_id === UserGroup.guest">
     <ion-item text-wrap>
@@ -9,13 +14,21 @@
     </ion-item>
   </ion-card>
 
-  <!-- A small info text -->
-  <ion-card *ngIf="restProvider.group_id > UserGroup.guest">
+  <!-- Some small info texts -->
+  <!-- <ion-card *ngIf="restProvider.group_id > UserGroup.guest">
     <ion-item text-wrap>
       <p>
         Es wäre gut wenn du dich immer auch auf die Liste schreibst, die <b>vor dem Raum 033 am schwarzen Brett</b> aushängt.
         Wenn du kurzfristig doch nicht kannst, sag jemandem Bescheid und trag dich hier, sowie auf von der Liste am Brett aus.
       </p>
+    </ion-item>
+  </ion-card> -->
+
+  <ion-card *ngIf="restProvider.group_id > UserGroup.guest">
+    <ion-item text-wrap>
+      <h3>
+        Das Anmelden und Abmelden ist immer ab 15:00 Uhr am Samstag möglich.
+      </h3>
     </ion-item>
   </ion-card>
 
@@ -25,7 +38,7 @@
       <ion-card-title>Anmeldung Samstag</ion-card-title>
     </ion-item>
 
-    <ion-item *ngIf="fetchState === FetchState.fetching" text-wrap>
+    <ion-item *ngIf="fetchState === FetchState.fetching && this.restProvider.group_id !== UserGroup.member" text-wrap>
       <p>Anmeldeliste wird abgerufen...</p>
     </ion-item>
 
@@ -33,14 +46,20 @@
       <p>Die Anmeldeliste konnte nicht abgerufen werden.</p>
     </ion-item>
 
-    <ion-list *ngIf="fetchState === FetchState.success">
+    <ion-list *ngIf="fetchState === FetchState.success || this.restProvider.group_id === UserGroup.member">
       <ion-item color="light" text-wrap>
-        <ion-label *ngIf="restProvider.group_id === UserGroup.admin" item-start><b>{{restProvider.profile.first_name}} {{restProvider.profile.last_name}} (Ich)</b></ion-label>
-        <ion-label *ngIf="restProvider.group_id === UserGroup.member" item-start>Kommst du am Samstag?</ion-label>
+        <ion-label [color]="attendant ? 'primary' : null" item-start>
+          <span *ngIf="restProvider.group_id === UserGroup.admin">
+            <b>{{restProvider.profile.first_name}} {{restProvider.profile.last_name}} (Ich)</b>
+          </span>
+          <span *ngIf="restProvider.group_id === UserGroup.member">
+            Kommst du am Samstag?
+          </span>
+        </ion-label>
         <ion-checkbox [(ngModel)]="attendant" (ionChange)="attendantStateChanged()" item-end></ion-checkbox>
       </ion-item>
       <ion-item *ngFor="let attendance of attendances" text-wrap>
-        <ion-label item-start>{{ attendance.first_name }} {{ attendance.last_name }}</ion-label>
+        <ion-label [color]="attendance.attendant ? 'primary' : null" item-start>{{ attendance.first_name }} {{ attendance.last_name }}</ion-label>
         <ion-checkbox disabled [checked]="attendance.attendant" item-end></ion-checkbox>
       </ion-item>
     </ion-list>

@@ -8,6 +8,8 @@ import { HomePage } from '../pages/home/home';
 import { InformationPage } from '../pages/information/information';
 import { ListPage } from '../pages/list/list';
 import { LoginPage } from '../pages/login/login';
+import { NewsfeedEditorPage } from '../pages/newsfeed-editor/newsfeed-editor';
+import { UserEditorPage } from '../pages/user-editor/user-editor';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -25,20 +27,12 @@ import { RestProvider } from '../providers/rest/rest';
     HomePage,
     LoginPage,
     ListPage,
-    InformationPage
+    InformationPage,
+    NewsfeedEditorPage,
+    UserEditorPage
   ],
   imports: [
     BrowserModule,
-    /* JwtModule.forRoot({
-      config: {
-        tokenGetter: () => {
-          return localStorage.get('token'); // <- This works. I tested it!
-        },
-        whitelistedDomains: [Config.apiDomain],
-        blacklistedRoutes: [],
-        skipWhenExpired: true
-      }
-    }), */
     IonicModule.forRoot(MyApp),
     IonicStorageModule.forRoot(),
     HttpClientModule,
@@ -61,7 +55,9 @@ import { RestProvider } from '../providers/rest/rest';
     HomePage,
     LoginPage,
     ListPage,
-    InformationPage
+    InformationPage,
+    NewsfeedEditorPage,
+    UserEditorPage
   ],
   providers: [
     StatusBar,

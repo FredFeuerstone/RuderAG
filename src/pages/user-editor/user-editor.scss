@@ -1,0 +1,4 @@
+page-user-editor {
+    // Bug fix: labels of ion-inputs don't get disabled
+    .item-input-disabled ion-label{ opacity : .4; }
+}

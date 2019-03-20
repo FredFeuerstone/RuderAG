@@ -1,4 +1,9 @@
 <ion-content>
+  <!-- Refresher -->
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  
   <!-- Welcome card -->
   <ion-card *ngIf="true">
     <ion-item text-wrap>
@@ -10,32 +15,11 @@
       </p>
     </ion-card-content>
   </ion-card>
-
-  <ion-card *ngIf="false">
-    <ion-item text-wrap>
-      <ion-card-title>Ja Moin, {{this.restProvider.user.firstName}}</ion-card-title>
-    </ion-item>
-
-    <ion-card-content no-padding text-wrap>
-      <ion-list>
-        <ion-item>
-          Einfach nur weil ich es kann, sag ich dir jetzt ein paar Informationen
-          (das sollte vllt in der entgültigen App nicht mehr da stehen):
-        </ion-item>
-        <ion-item>
-          Dein Name ist: {{this.restProvider.user.firstName}} {{this.restProvider.user.lastName}}
-        </ion-item>
-        <ion-item>
-          Deine Benutzer-Gruppe ist: {{['Gast', 'Mitglied', 'Admin'][this.restProvider.groupId]}}
-        </ion-item>
-      </ion-list>
-    </ion-card-content>
-  </ion-card>
   
   <!-- Newsfeed header -->
   <ion-item-divider>
     <span>Aktuelles</span>
-    <button ion-button *ngIf="this.restProvider.group_id >= 2" clear color="secondary" (click)="addNewsfeed()" item-end>
+    <button ion-button *ngIf="this.restProvider.group_id >= 2" clear color="secondary" (click)="createNewsfeed()" item-end>
       Neuer Eintrag
     </button>
   </ion-item-divider>
@@ -46,6 +30,7 @@
       <p>Newsfeed wird abgerufen...</p>
     </ion-item>
   </ion-card>
+
   <ion-card *ngIf="fetchState === FetchState.error">
     <ion-item text-wrap>
       <p>Newsfeed konnte nicht abgerufen werden.</p>
@@ -53,30 +38,32 @@
   </ion-card>
 
   <!-- Newsfeed cards -->
-  <ion-card *ngFor="let news of newsfeed; let i = index">
-    <!-- Title and event date -->
-    <ion-item text-wrap>
-      <ion-card-title>{{news.title}}</ion-card-title>
-      <h2 *ngIf="news.event_at">am {{news.event_at | date: "dd. MM. yyyy"}} um {{news.event_at | date: "HH:mm"}}</h2>
+  <div *ngIf="fetchState === FetchState.success">
+    <ion-card *ngFor="let news of newsfeed; let i = index">
+      <!-- Title and event date -->
+      <ion-item text-wrap>
+        <ion-card-title>{{news.title}}</ion-card-title>
+        <h2 *ngIf="news.event_at">am {{news.event_at | date: "dd. MM. yyyy"}} um {{news.event_at | date: "HH:mm"}}</h2>
 
-      <!-- Edit Button -->
-      <button ion-button *ngIf="this.restProvider.group_id >= 2" icon-only clear color="secondary" item-end>
-        <ion-icon name="create"></ion-icon>
-      </button>
-    </ion-item>
+        <!-- Edit Button -->
+        <button ion-button icon-only *ngIf="this.restProvider.group_id >= 2" clear color="secondary" (click)="changeNewsfeed(news.newsfeed_id)" item-end>
+          <ion-icon name="create"></ion-icon>
+        </button>
+      </ion-item>
 
-    <!-- Content -->
-    <ion-card-content>
-      <p>{{news.content}}</p>
-    </ion-card-content>
+      <!-- Content -->
+      <ion-card-content>
+        <p>{{news.content}}</p>
+      </ion-card-content>
 
-    <!-- Created at date -->
-    <ion-row>
-      <ion-col center text-center>
-        <ion-note>
-            Erstellt am {{news.created_at | date: "dd. MM. yyyy"}} um {{news.created_at | date: "HH:mm"}}
-        </ion-note>
-      </ion-col>
-    </ion-row>
-  </ion-card>
+      <!-- Created at date -->
+      <ion-row>
+        <ion-col center text-center>
+          <ion-note>
+              Erstellt am {{news.created_at | date: "dd. MM. yyyy"}} um {{news.created_at | date: "HH:mm"}}
+          </ion-note>
+        </ion-col>
+      </ion-row>
+    </ion-card>
+  </div>
 </ion-content>

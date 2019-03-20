@@ -1,9 +1,9 @@
 import { Component, ViewChild } from '@angular/core';
+import { Tabs, NavController, ModalController } from 'ionic-angular';
 
 import { HomePage } from '../home/home';
 import { InformationPage } from '../information/information';
 import { ListPage } from '../list/list';
-import { Tabs, NavController, ModalController } from 'ionic-angular';
 import { LoginPage } from '../login/login';
 
 @Component({
