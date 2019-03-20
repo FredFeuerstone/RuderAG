@@ -1,5 +1,6 @@
+import { SlideshowPage } from './../slideshow/slideshow';
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, ModalController } from 'ionic-angular';
 
 @Component({
   selector: 'information-home',
@@ -8,8 +9,11 @@ import { NavController } from 'ionic-angular';
 
 export class InformationPage {
 
-  constructor(public navCtrl: NavController) {
-
+  constructor(public navCtrl: NavController, public modalCtrl: ModalController) {
   }
 
+  openSlideshowPage() {
+    let slideshowModal = this.modalCtrl.create(SlideshowPage);
+    slideshowModal.present();
+  }
 }

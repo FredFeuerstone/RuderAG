@@ -10,6 +10,7 @@ import { ListPage } from '../pages/list/list';
 import { LoginPage } from '../pages/login/login';
 import { NewsfeedEditorPage } from '../pages/newsfeed-editor/newsfeed-editor';
 import { UserEditorPage } from '../pages/user-editor/user-editor';
+import { SlideshowPage } from '../pages/slideshow/slideshow';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -29,7 +30,8 @@ import { RestProvider } from '../providers/rest/rest';
     ListPage,
     InformationPage,
     NewsfeedEditorPage,
-    UserEditorPage
+    UserEditorPage,
+    SlideshowPage
   ],
   imports: [
     BrowserModule,
@@ -57,7 +59,8 @@ import { RestProvider } from '../providers/rest/rest';
     ListPage,
     InformationPage,
     NewsfeedEditorPage,
-    UserEditorPage
+    UserEditorPage,
+    SlideshowPage
   ],
   providers: [
     StatusBar,
